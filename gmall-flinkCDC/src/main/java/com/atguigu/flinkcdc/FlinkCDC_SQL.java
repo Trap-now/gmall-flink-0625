@@ -23,7 +23,7 @@ public class FlinkCDC_SQL {
                 " 'hostname' = 'hadoop102',\n" +
                 " 'port' = '3306',\n" +
                 " 'username' = 'root',\n" +
-                " 'password' = '000000',\n" +
+                " 'password' = '123456',\n" +
                 " 'database-name' = 'gmall_flink_0625',\n" +
                 " 'table-name' = 'base_trademark'\n" +
                 ")");

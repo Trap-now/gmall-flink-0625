@@ -36,7 +36,7 @@ public class FlinkCDC_StreamAPI {
                 .hostname("hadoop102")
                 .port(3306)
                 .username("root")
-                .password("000000")
+                .password("123456")
                 .databaseList("gmall_flink_0625")
                 .tableList("gmall_flink_0625.base_trademark")
                 //可选配置项,如果不指定该参数,则会读取上一个配置下的所有表的数据，注意：指定的时候需要使用"db.table"的方式
