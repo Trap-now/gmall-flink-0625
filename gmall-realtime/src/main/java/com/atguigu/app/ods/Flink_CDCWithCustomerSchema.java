@@ -34,7 +34,9 @@ public class Flink_CDCWithCustomerSchema {
                 .databaseList("gmall_flink_0625")
 //                .tableList("gmall_flink_0625.z_user_info")
                 //可选配置项,如果不指定该参数,则会读取上一个配置下的所有表的数据，注意：指定的时候需要使用"db.table"的方式
-                .startupOptions(StartupOptions.initial())
+                // 第一次用initial()即可,后续使用latest()
+                //.startupOptions(StartupOptions.initial())
+                .startupOptions(StartupOptions.latest())
                 .deserializer(new MyFlinkCDCDeSer())
                 .build();
 
@@ -42,6 +44,7 @@ public class Flink_CDCWithCustomerSchema {
 
 
         //将数据发送至Kafka
+        streamSource.print();
         streamSource.addSink(MyKafkaUtil.getKafkaSink("ods_base_db"));
 
         env.execute();
