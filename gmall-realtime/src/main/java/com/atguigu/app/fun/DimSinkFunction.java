@@ -44,7 +44,10 @@ public class DimSinkFunction extends RichSinkFunction<JSONObject> {
 
             // 如果数据更新了需要将Redis中的数据删掉
             // 这里使用的是Phoenix的表名 sinkTable ,这里需要转化为大写,因为Phoenix中也是大写
-            DimUtil.deleteDimInfo(sinkTable.toUpperCase(),after.getString("id"));
+            if ("update".equals(value.getString("type"))) {
+                DimUtil.deleteDimInfo(sinkTable.toUpperCase(),after.getString("id"));
+            }
+
 
             // 执行
             preparedStatement.execute();
