@@ -3,12 +3,14 @@ package com.atguigu.app.dws;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.bean.VisitorStats;
+import com.atguigu.utils.ClickHoustUtil;
 import com.atguigu.utils.DateTimeUtil;
 import com.atguigu.utils.MyKafkaUtil;
 import org.apache.flink.api.common.eventtime.SerializableTimestampAssigner;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.functions.KeySelector;
+import org.apache.flink.connector.jdbc.JdbcSink;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
@@ -157,10 +159,26 @@ public class VisitorStatsApp {
         });
 
 
+
+
         // TODO 7.将数据写出到 clickhouse
+        // flink 本身提供了一个 jdbc 连接器,但是 Phoenix 用不了,因为一个流中会包含很多张表的数据,而这些表的字段、字段个数都不一样
+        // jdbc 连接器更适合单表写
+
         result.print("result>>>>>>>>>");
+        // 使用 jdbcsink需要导入相关的jdbc依赖
+        // sink()中的参数：
+        // sql:sql语句;
+        // statementBuilder:给占位符赋值;
+        // executionOptions:执行条件,关于批处理的内容;
+        // connectionOptions:连接参数,提供的Driver、URL;
+        // 后两个参数都是统一的,可以通过写一个工具类后期进行调用
+        // result.addSink(JdbcSink.sink())
 
-
+        // 使用工具类调用获取方法
+        // 建表字段顺序与Javabean的顺序是一样的
+        // 因此这里不用写字段名,只需要保证values()括号中问号的位置与表中字段的位置是一一对应的个数和类型
+        ClickHoustUtil.getJdbcSink("insert into visitor_stats_210625 values(?,?,?,?,?,?,?,?,?,?,?,?)");
 
         // TODO 8.启动任务
         env.execute();
